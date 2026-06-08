@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <title>SDP Dashboard</title>
+    <style>
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+        .header {
+            margin-bottom: 25px;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 15px;
+            color: #555;
+        }
+        .card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>داشبورد تیکت‌های ServiceDesk Plus</h1>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <h3>تیکت‌های باز</h3>
+            <div class="number">{{ open_tickets }}</div>
+        </div>
+
+        <div class="card">
+            <h3>در انتظار</h3>
+            <div class="number">{{ pending_tickets }}</div>
+        </div>
+
+        <div class="card">
+            <h3>خارج از SLA</h3>
+            <div class="number">{{ overdue_tickets }}</div>
+        </div>
+
+        <div class="card">
+            <h3>بدون تکنسین</h3>
+            <div class="number">{{ unassigned_tickets }}</div>
+        </div>
+    </div>
+</body>
+</html>
