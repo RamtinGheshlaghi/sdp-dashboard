@@ -1,11 +1,12 @@
 from django.shortcuts import render
+from .models import Ticket
 
 def home(request):
     context = {
-        "open_tickets": 42,
-        "pending_tickets": 11,
-        "overdue_tickets": 7,
-        "unassigned_tickets": 4,
+        "open_tickets": Ticket.objects.filter(status="open").count(),
+        "pending_tickets": Ticket.objects.filter(status="pending").count(),
+        "overdue_tickets": Ticket.objects.filter(is_overdue=True).count(),
+        "unassigned_tickets": Ticket.objects.filter(technician__isnull=True).count(),
     }
     return render(request, "dashboard/home.html", context)
 
