@@ -22,6 +22,16 @@ def home(request):
         .order_by("-open_count")
     )
 
+    max_open_count = max([tech.open_count for tech in technician_stats], default=1)
+
+    technician_chart = []
+    for tech in technician_stats:
+        technician_chart.append({
+            "name": tech.name,
+            "open_count": tech.open_count,
+            "bar_width": int((tech.open_count / max_open_count) * 100) if max_open_count else 0,
+        })
+
     context = {
         "open_tickets": Ticket.objects.filter(status="open").count(),
         "pending_tickets": Ticket.objects.filter(status="pending").count(),
@@ -29,5 +39,6 @@ def home(request):
         "unassigned_tickets": Ticket.objects.filter(technician__isnull=True).count(),
         "open_ticket_list": open_ticket_list,
         "technician_stats": technician_stats,
+        "technician_chart": technician_chart,
     }
     return render(request, "dashboard/home.html", context)

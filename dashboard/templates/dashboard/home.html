@@ -64,6 +64,42 @@
             color: #b00020;
             font-weight: bold;
         }
+        .chart-box {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 15px;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .bar-label {
+            font-size: 14px;
+        }
+
+        .bar-track {
+            background: #eef1f5;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 28px;
+        }
+
+        .bar-fill {
+            background: #2f6fed;
+            color: white;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 8px;
+            min-width: 24px;
+        }
     </style>
 </head>
 <body>
@@ -169,5 +205,22 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <h2>نمودار تیکت‌های باز به تفکیک تکنسین</h2>
+
+<div class="chart-box">
+    {% for item in technician_chart %}
+        <div class="bar-row">
+            <div class="bar-label">{{ item.name }}</div>
+            <div class="bar-track">
+                <div class="bar-fill" style="width: {{ item.bar_width }}%;">
+                    {{ item.open_count }}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>داده‌ای برای نمودار وجود ندارد.</p>
+    {% endfor %}
+</div>
 </body>
 </html>
