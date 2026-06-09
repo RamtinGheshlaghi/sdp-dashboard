@@ -149,7 +149,9 @@
                     <td>{{ ticket.subject }}</td>
                     <td>
                         {% if ticket.technician %}
-                            {{ ticket.technician.name }}
+                            <a href="{% url 'technician_detail' ticket.technician.id %}">
+                                {{ ticket.technician.name }}
+                            </a>
                         {% else %}
                             بدون تکنسین
                         {% endif %}
@@ -186,7 +188,11 @@
         <tbody>
             {% for tech in technician_stats %}
                 <tr>
-                    <td>{{ tech.name }}</td>
+                    <td>
+                        <a href="{% url 'technician_detail' tech.id %}">
+                        {{ tech.name }}
+                        </a>
+                    </td>
                     <td>{{ tech.total_count }}</td>
                     <td>{{ tech.open_count }}</td>
                     <td>{{ tech.pending_count }}</td>
@@ -211,7 +217,11 @@
 <div class="chart-box">
     {% for item in technician_chart %}
         <div class="bar-row">
-            <div class="bar-label">{{ item.name }}</div>
+            <div class="bar-label">
+                <a href="{% url 'technician_detail' item.id %}">
+                    {{ item.name }}
+                </a>
+            </div>
             <div class="bar-track">
                 <div class="bar-fill" style="width: {{ item.bar_width }}%;">
                     {{ item.open_count }}
