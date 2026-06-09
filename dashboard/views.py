@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Count, Q
 from .models import Ticket, Technician
 
@@ -27,6 +27,7 @@ def home(request):
     technician_chart = []
     for tech in technician_stats:
         technician_chart.append({
+            "id": tech.id,
             "name": tech.name,
             "open_count": tech.open_count,
             "bar_width": int((tech.open_count / max_open_count) * 100) if max_open_count else 0,
@@ -42,3 +43,25 @@ def home(request):
         "technician_chart": technician_chart,
     }
     return render(request, "dashboard/home.html", context)
+
+
+def technician_detail(request, pk):
+    technician = get_object_or_404(Technician, pk=pk)
+
+    tickets = (
+        technician.tickets
+        .all()
+        .order_by("-created_at")
+    )
+
+    context = {
+        "technician": technician,
+        "tickets": tickets,
+        "total_tickets": tickets.count(),
+        "open_tickets": tickets.filter(status="open").count(),
+        "pending_tickets": tickets.filter(status="pending").count(),
+        "overdue_tickets": tickets.filter(is_overdue=True).count(),
+        "closed_tickets": tickets.filter(status="closed").count(),
+    }
+
+    return render(request, "dashboard/technician_detail.html", context)
