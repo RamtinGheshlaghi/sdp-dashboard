@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <title>لیست همه تیکت‌ها</title>
+    <style>
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        a {
+            color: #2f6fed;
+            text-decoration: none;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 15px;
+            color: #555;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f0f2f5;
+        }
+
+        .overdue {
+            color: #b00020;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a href="/">بازگشت به داشبورد</a>
+
+    <h1>لیست همه تیکت‌ها</h1>
+
+    <div class="cards">
+        <div class="card">
+            <h3>کل تیکت‌ها</h3>
+            <div class="number">{{ total_tickets }}</div>
+        </div>
+
+        <div class="card">
+            <h3>باز</h3>
+            <div class="number">{{ open_tickets }}</div>
+        </div>
+
+        <div class="card">
+            <h3>در انتظار</h3>
+            <div class="number">{{ pending_tickets }}</div>
+        </div>
+
+        <div class="card">
+            <h3>خارج از SLA</h3>
+            <div class="number">{{ overdue_tickets }}</div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>شماره تیکت</th>
+                <th>عنوان</th>
+                <th>تکنسین</th>
+                <th>وضعیت</th>
+                <th>اولویت</th>
+                <th>SLA</th>
+                <th>تاریخ ایجاد</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+                <tr>
+                    <td>{{ ticket.request_id }}</td>
+                    <td>{{ ticket.subject }}</td>
+                    <td>
+                        {% if ticket.technician %}
+                            <a href="{% url 'technician_detail' ticket.technician.id %}">
+                                {{ ticket.technician.name }}
+                            </a>
+                        {% else %}
+                            بدون تکنسین
+                        {% endif %}
+                    </td>
+                    <td>{{ ticket.get_status_display }}</td>
+                    <td>{{ ticket.get_priority_display }}</td>
+                    <td>
+                        {% if ticket.is_overdue %}
+                            <span class="overdue">خارج از SLA</span>
+                        {% else %}
+                            عادی
+                        {% endif %}
+                    </td>
+                    <td>{{ ticket.created_at|date:"Y/m/d H:i" }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7">تیکتی ثبت نشده است.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

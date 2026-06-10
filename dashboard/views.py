@@ -65,3 +65,21 @@ def technician_detail(request, pk):
     }
 
     return render(request, "dashboard/technician_detail.html", context)
+
+def ticket_list(request):
+    tickets = (
+        Ticket.objects
+        .select_related("technician")
+        .all()
+        .order_by("-created_at")
+    )
+
+    context = {
+        "tickets": tickets,
+        "total_tickets": tickets.count(),
+        "open_tickets": tickets.filter(status="open").count(),
+        "pending_tickets": tickets.filter(status="pending").count(),
+        "overdue_tickets": tickets.filter(is_overdue=True).count(),
+    }
+
+    return render(request, "dashboard/ticket_list.html", context)
