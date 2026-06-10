@@ -74,8 +74,32 @@ def ticket_list(request):
         .order_by("-created_at")
     )
 
+    technicians = Technician.objects.filter(is_active=True).order_by("name")
+
+    selected_status = request.GET.get("status", "")
+    selected_priority = request.GET.get("priority", "")
+    selected_technician = request.GET.get("technician", "")
+
+    if selected_status:
+        tickets = tickets.filter(status=selected_status)
+
+    if selected_priority:
+        tickets = tickets.filter(priority=selected_priority)
+
+    if selected_technician:
+        if selected_technician == "unassigned":
+            tickets = tickets.filter(technician__isnull=True)
+        else:
+            tickets = tickets.filter(technician_id=selected_technician)
+
     context = {
         "tickets": tickets,
+        "technicians": technicians,
+        "status_choices": Ticket.STATUS_CHOICES,
+        "priority_choices": Ticket.PRIORITY_CHOICES,
+        "selected_status": selected_status,
+        "selected_priority": selected_priority,
+        "selected_technician": selected_technician,
         "total_tickets": tickets.count(),
         "open_tickets": tickets.filter(status="open").count(),
         "pending_tickets": tickets.filter(status="pending").count(),
